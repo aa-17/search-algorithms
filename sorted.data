@@ -1,0 +1,11 @@
+# defines a *sorted* vector of "random" word aligned 32-bit signed integers
+#
+# symbols:
+#
+#   data: the data vector
+#      n: the number of integers in the data vector
+#
+
+data: .word -30631, -25705, -24863, -22517, -20287, -20255, -17944, -16265, -15382, -13733, -10231, -8590, -8108, -7561, -4702, -2573, -1178, 4011, 5439, 5510, 5866, 7674, 9488, 11088, 15090, 21259, 23300, 24881, 25027, 26628, 31565, 31632, 
+n: .word 32
+

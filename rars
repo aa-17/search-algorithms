@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# wrapper for launching RARS (the RISC-V Assembler and Runtime Simulator)
+# (see https://github.com/TheThirdOne/rars/releases/latest)
+#
+# if the RARS .jar file does not exist in the same directory as this script,
+# we'll attempt to down load it
+
+# 2020-07-18 - Shaun L. Cloherty <shaun.cloherty@rmit.edu.au>
+
+RELEASE_URL="https://api.github.com/repos/TheThirdOne/rars/releases/latest"
+
+getpth() {
+  echo "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+}
+
+geturl() {
+  curl --silent $1 |
+  grep '"browser_download_url":' |
+  sed -E 's/.*"([^"]+)"/\1/'
+}
+
+getjar() {
+  cd "$2" && curl --remote-name --location --silent $( geturl "$1" )
+}
+
+findjar() {
+  find -s $1 -iname "rars*.jar" -print | tail -1
+}
+
+# path to this script
+PTH="$( getpth )"
+
+# path to the .jar file
+JARFILE="$( findjar "${PTH}" )"
+
+if [ -z ${JARFILE} ]; then
+  echo "RARS .jar file not found."
+  echo "Fetching from ${RELEASE_URL}...";
+  getjar "${RELEASE_URL}" "${PTH}" && JARFILE="$( findjar "${PTH}" )"
+fi
+
+if [ -z ${JARFILE} ]; then
+  echo "Failed!"
+else
+  java -jar "${JARFILE}" $@
+fi
